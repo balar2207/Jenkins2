@@ -1,0 +1,13 @@
+pipeline {
+    agent { label 'master' }
+    environment {
+    PATH = "/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin"
+  }
+    stages {
+        stage('Execute Shell Script') {
+            steps {
+                sh 'echo `hostname -I`'
+            }
+            }
+    }
+}
