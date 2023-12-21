@@ -17,3 +17,8 @@
 3. Now we need to provide Sonar Server details like Sonar Host URL and Sonar Token for Authentication. To do so go to Jenkins --> Manage Jenkins --> Credentials --> Add Credentials --> on Kind select Secret text. Provide your sonar token in Secret box, provide id and Description.
 
 <img src="../images/sonarscanner-cred.PNG">
+
+4. To provide Sonar host URL go to Jenkins --> Manage Jenkins --> System --> SonarQube Server
+Provide a name, provide server URl and select "server authentication token" that you have already configured in the previous step. now click on Apply --> Save
+
+<img src="../images/sonarserver-details.PNG">
