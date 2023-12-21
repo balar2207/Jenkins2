@@ -1,9 +1,9 @@
 <img src="../images/c4logo.png">
 
 # In this tutorials we are going to learn
-1. How to install SonarScanner plugin 
-2. How to configure SonarScanner
-3. How to scan you project
+ * How to install SonarScanner plugin 
+ * How to configure SonarScanner
+ * How to scan you project
 
 ## How to install SonarScanner plugin
 1. Login to Jenkins --> Manage Jenkins --> Plugins. Now in the Search box type "SonarQube Scanner for Jenkins" and click on install button to install th plugin.
