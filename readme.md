@@ -5,7 +5,7 @@
   2. [Jenkins Installation](https://github.com/c4clouds/jenkins-tutorials/blob/main/docs/Jenkins-Installation.md)
   3. [Configure Jenkins and User Management](https://github.com/c4clouds/jenkins-tutorials/blob/main/docs/Configure-Jenkins-and-User-Management.md)
   4. [Jenkins jobs setup](https://github.com/c4clouds/jenkins-tutorials/blob/main/docs/Jenkins-jobs-setup.md)
-  5. Jenkins Integration
+  5. [Jenkins Integration with SonarScanner]()
   6. Jenkins User administration
   7. [Configure Tomcat Manager APP to Deploy with Jenkins](https://github.com/c4clouds/jenkins-tutorials/blob/main/docs/Configure_Tomcat_Manager_APP_to_Deploy_with_Jenkins.md)
 
