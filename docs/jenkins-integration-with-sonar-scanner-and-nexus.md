@@ -51,13 +51,13 @@ On the Build steps define  "clean package" in Goals and Options
 ## How to configure nexus plugin and upload artifact to nexus
 In your sonar-jenkins job click on configure button. On Post Steps click on Add post-build step --> Nexus artifact Uploader.
 Now set the Nexus version to NEXUS3, Protocol to HTTP provide Nexus Host URL and add your nexus Login Credentials for authentication. 
-
+---
 GroupId: ${POM_GROUPID}
 Version: ${POM_VERSION}
 ArtifactId: ${POM_ARTIFACTID}
 Type: ${POM_PACKAGING}
 File: target/${POM_ARTIFACTID}-${POM_VERSION}.${POM_PACKAGING}
-
+---
 in the GroupId mention ${POM_GROUPID}, Version as ${POM_VERSION}, Repository as "maven-demo".
 
 Now click on add to add Artifacts details
