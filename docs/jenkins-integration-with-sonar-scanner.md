@@ -22,3 +22,21 @@
 Provide a name, provide server URl and select "server authentication token" that you have already configured in the previous step. now click on Apply --> Save
 
 <img src="../images/sonarserver-details.PNG">
+
+## How to scan you project
+1. Create a new job "sonar-jenkins" on "Source Code Management" select git and provide the github project url as "https://github.com/c4clouds/maven-helloworld.git"
+
+note: branch is main not master for the above github repo
+
+<img src="../images/sonarscanner-git.PNG">
+
+2. In the Build Steps click on Add build step --> Execute SonarQube Scanner. In the Analysis properties provide the below inputs and click on apply and save.
+
+```
+sonar.projectKey=demo
+sonar.projectName=demo
+sonar.projectVersion=1.0
+sonar.sources=.
+```
+
+Note: Make sure to create a project called "demo" in Sonar to make the build success.
