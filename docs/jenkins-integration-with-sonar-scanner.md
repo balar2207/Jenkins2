@@ -12,8 +12,8 @@
 1. To configure the SonarScanner go to  Jenkins --> Manage Jenkins --> Tools --> SonarQube Scanner installations
 2. Provide a name to SonarQube Scanner --> apply -->save
 
-<img src="../images/sonarscanner-configure.png">
+<img src="../images/sonarscanner-configure.PNG">
 
 3. Now we need to provide Sonar Server details like Sonar Host URL and Sonar Token for Authentication. To do so go to Jenkins --> Manage Jenkins --> Credentials --> Add Credentials --> on Kind select Secret text. Provide your sonar token in Secret box, provide id and Description.
 
-<img src="../images/sonarscanner-cred.png">
+<img src="../images/sonarscanner-cred.PNG">
