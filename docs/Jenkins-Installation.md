@@ -2,7 +2,7 @@
 <img src="../images/c4logo.png">
 
 # In this tutorials we are going to learn
- 1.**Install jenkins through YUM**
+ 1. **Install jenkins through YUM**
  2. **Downloading and Installing Jenkins using TomCat**
  3. **Creating Jenkins as a Service**
  4. **Starting and Stopping Jenkins**
