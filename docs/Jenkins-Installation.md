@@ -2,11 +2,26 @@
 <img src="../images/c4logo.png">
 
 # In this tutorials we are going to learn
- 1. **Downloading and Installing Jenkins using TomCat**
- 2. **Creating Jenkins as a Service**
- 3. **Starting and Stopping Jenkins**
+ 1.**Install jenkins through YUM**
+ 2. **Downloading and Installing Jenkins using TomCat**
+ 3. **Creating Jenkins as a Service**
+ 4. **Starting and Stopping Jenkins**
 
+## Install Jenkins through YUM 
+```
+curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
 
+rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+
+yum install fontconfig java-17-openjdk
+
+yum install jenkins
+
+systemctl start jenkins
+
+systemctl enable jenkins
+
+```
 
 ## Install the Java Development Kit
 ```code
