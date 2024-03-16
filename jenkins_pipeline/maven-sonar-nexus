@@ -1,21 +1,40 @@
 pipeline {
     agent any
+//Allow below signature
+//http://34.125.140.212:8080/scriptApproval/
+//method hudson.PluginManager getPlugin java.lang.String
+//method jenkins.model.Jenkins getPluginManager
+//method org.apache.maven.model.Model getArtifactId
+//method org.apache.maven.model.Model getGroupId
+//method org.apache.maven.model.Model getPackaging
+//method org.apache.maven.model.Model getVersion
+//staticMethod jenkins.model.Jenkins getInstance
 
     environment {
-        SONAR_URL = 'http://34.125.191.127:9000 '
+        SONAR_URL = 'http://10.182.0.4:9000'
         SONAR_TOKEN = credentials('sonar-jenkins')
-        SONAR_PROJECT_KEY = 'demo'
+        SONAR_PROJECT_KEY = 'sonar-jenkins'
         NEXUS_VERSION = "nexus3"
         NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "34.125.50.112:9081"
+        NEXUS_URL = "10.182.0.5:8081"
         NEXUS_REPOSITORY = "maven-demo"
-        NEXUS_CREDENTIAL_ID = "nexus-jenkins"
+        NEXUS_CREDENTIAL_ID = "sonar-jenkins-pass"
+        // Define a list of plugin names to install
+        //PLUGIN_NAMES = "git,pipeline-utility-steps"
     }
 
     stages {
         stage('Git Checkout') {
             steps {
-               git branch: 'main', url: 'https://github.com/c4clouds/maven-helloworld.git'
+                git branch: 'main', url: 'https://github.com/c4clouds/maven-helloworld.git'
+            }
+        }
+        stage('Inject Environment Variables') {
+            steps {
+                script {
+                    // Injecting individual key-value pairs
+                    env.NEXUSSERVERIP = '10.182.0.5'
+                }
             }
         }
         stage('SonarQube Scan') {
@@ -33,19 +52,23 @@ pipeline {
         }
         stage('Build') {
             steps {
+                // Ensure that NEXUSSERVERIP is set properly before Maven build
+                script {
+                    env.NEXUSSERVERIP = "${NEXUSSERVERIP}"
+                }
                 sh 'mvn clean package'
             }
         }
         stage("Publish to Nexus Repository") {
             steps {
                 script {
-                    pom = readMavenPom file: "pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    pom = readMavenPom file: "pom.xml"
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path;
-                    artifactExists = fileExists artifactPath;
-                    if(artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                    artifactPath = filesByGlob[0].path
+                    artifactExists = fileExists artifactPath
+                    if (artifactExists) {
+                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}"
                         nexusArtifactUploader(
                             nexusVersion: NEXUS_VERSION,
                             protocol: NEXUS_PROTOCOL,
@@ -56,20 +79,20 @@ pipeline {
                             credentialsId: NEXUS_CREDENTIAL_ID,
                             artifacts: [
                                 [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: artifactPath,
-                                type: pom.packaging],
+                                    classifier: '',
+                                    file: artifactPath,
+                                    type: pom.packaging],
                                 [artifactId: pom.artifactId,
-                                classifier: '',
-                                file: "pom.xml",
-                                type: "pom"]
+                                    classifier: '',
+                                    file: "pom.xml",
+                                    type: "pom"]
                             ]
-                        );
+                        )
                     } else {
-                        error "*** File: ${artifactPath}, could not be found";
+                        error "*** File: ${artifactPath}, could not be found"
                     }
                 }
             }
-        }		
-    }		
+        }
+    }
 }
