@@ -1,3 +1,26 @@
+//Install Pipeline Utility Steps
+//install openjdk 17
+//sudo yum install java-17-openjdk-devel
+//
+//To approve signature vi /var/lib/jenkins/scriptApproval.xml
+// remove '//' from all the lines 
+//<?xml version='1.0' encoding='UTF-8'?>
+//<scriptApproval>
+//  <approvedSignatures>
+//    <string>method hudson.PluginManager getPlugin java.lang.String</string>
+//    <string>method jenkins.model.Jenkins getPluginManager</string>
+//    <string>method org.apache.maven.model.Model getArtifactId</string>
+//    <string>method org.apache.maven.model.Model getGroupId</string>
+//    <string>method org.apache.maven.model.Model getPackaging</string>
+//    <string>method org.apache.maven.model.Model getVersion</string>
+//    <string>staticMethod jenkins.model.Jenkins getInstance</string>
+//  </approvedSignatures>
+//</scriptApproval>
+//
+//restart jenkins
+//sudo systemctl restart jenkins
+
+
 pipeline {
     agent any
 
