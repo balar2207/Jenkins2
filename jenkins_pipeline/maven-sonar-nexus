@@ -1,26 +1,15 @@
 pipeline {
     agent any
-//Allow below signature
-//http://34.125.140.212:8080/scriptApproval/
-//method hudson.PluginManager getPlugin java.lang.String
-//method jenkins.model.Jenkins getPluginManager
-//method org.apache.maven.model.Model getArtifactId
-//method org.apache.maven.model.Model getGroupId
-//method org.apache.maven.model.Model getPackaging
-//method org.apache.maven.model.Model getVersion
-//staticMethod jenkins.model.Jenkins getInstance
 
     environment {
-        SONAR_URL = 'http://10.182.0.4:9000'
-        SONAR_TOKEN = credentials('sonar-jenkins')
-        SONAR_PROJECT_KEY = 'sonar-jenkins'
-        NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "10.182.0.5:8081"
+        SONAR_URL = 'http://35.203.153.160:9000'
+        SONAR_TOKEN = credentials('jenkins-sonar')
+        SONAR_PROJECT_KEY = 'maven-demo'
+        NEXUS_URL = "http://35.233.255.155:8081"
         NEXUS_REPOSITORY = "maven-demo"
-        NEXUS_CREDENTIAL_ID = "sonar-jenkins-pass"
-        // Define a list of plugin names to install
-        //PLUGIN_NAMES = "git,pipeline-utility-steps"
+        NEXUS_CREDENTIAL_ID = "jenkins-nexus" // ID of the Jenkins credentials
+        JAVA_HOME = "/usr/lib/jvm/java-17-openjdk"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
 
     stages {
@@ -32,16 +21,14 @@ pipeline {
         stage('Inject Environment Variables') {
             steps {
                 script {
-                    // Injecting individual key-value pairs
-                    env.NEXUSSERVERIP = '10.182.0.5'
+                    env.NEXUSSERVERIP = '35.233.255.155'
                 }
             }
         }
         stage('SonarQube Scan') {
             steps {
                 script {
-                    withSonarQubeEnv('SonarQubeServer') {
-                        // Run SonarQube scanner with parameters
+                    withSonarQubeEnv('sonar-server') {
                         sh "mvn sonar:sonar \
                             -Dsonar.host.url=${SONAR_URL} \
                             -Dsonar.login=${SONAR_TOKEN} \
@@ -52,44 +39,24 @@ pipeline {
         }
         stage('Build') {
             steps {
-                // Ensure that NEXUSSERVERIP is set properly before Maven build
                 script {
                     env.NEXUSSERVERIP = "${NEXUSSERVERIP}"
                 }
                 sh 'mvn clean package'
             }
         }
-        stage("Publish to Nexus Repository") {
+        stage('Upload to Nexus') {
             steps {
                 script {
                     pom = readMavenPom file: "pom.xml"
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                     artifactPath = filesByGlob[0].path
-                    artifactExists = fileExists artifactPath
-                    if (artifactExists) {
-                        echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}"
-                        nexusArtifactUploader(
-                            nexusVersion: NEXUS_VERSION,
-                            protocol: NEXUS_PROTOCOL,
-                            nexusUrl: NEXUS_URL,
-                            groupId: pom.groupId,
-                            version: pom.version,
-                            repository: NEXUS_REPOSITORY,
-                            credentialsId: NEXUS_CREDENTIAL_ID,
-                            artifacts: [
-                                [artifactId: pom.artifactId,
-                                    classifier: '',
-                                    file: artifactPath,
-                                    type: pom.packaging],
-                                [artifactId: pom.artifactId,
-                                    classifier: '',
-                                    file: "pom.xml",
-                                    type: "pom"]
-                            ]
-                        )
-                    } else {
-                        error "*** File: ${artifactPath}, could not be found"
+                    
+                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIAL_ID, usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
+                        sh """
+                            curl -v -u ${NEXUS_USER}:${NEXUS_PASS} --upload-file ${artifactPath} \
+                            ${NEXUS_URL}/repository/${NEXUS_REPOSITORY}/${pom.groupId.replace('.', '/')}/${pom.artifactId}/${pom.version}/${pom.artifactId}-${pom.version}.${pom.packaging}
+                        """
                     }
                 }
             }
