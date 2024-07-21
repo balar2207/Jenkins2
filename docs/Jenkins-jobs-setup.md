@@ -44,7 +44,7 @@
 
   <img src="../images/Jenkins-Maven-Job.PNG">
 
-  GitHub Project URL https://github.com/submah/deploy-hello-world-with-jenkins.git
+  GitHub Project URL https://github.com/c4clouds/maven-helloworld.git
  
   Go to Source Code Management and select Git then provide the repository url as above else you can specify you own github url.
   
